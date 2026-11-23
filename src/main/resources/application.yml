@@ -1,0 +1,68 @@
+# Configuración común a todos los perfiles.
+# Lo específico de cada entorno vive en application-dev.yml y application-prod.yml.
+spring:
+  application:
+    name: mollet
+  profiles:
+    default: dev
+  jpa:
+    open-in-view: false          # evita consultas "escondidas" desde los controladores
+    hibernate:
+      ddl-auto: validate         # el esquema lo maneja Flyway; Hibernate solo verifica que coincida
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    default-property-inclusion: non_null
+  web:
+    locale: es                   # mensajes de validación en español
+    locale-resolver: fixed
+
+server:
+  error:
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: Mollet
+    description: Billetera digital - API REST
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+
+# Reglas de negocio y seguridad propias de Mollet (ver MolletProperties.java)
+mollet:
+  timezone: America/Lima
+  jwt:
+    secret: ${JWT_SECRET:}
+    expiration: 1h
+    issuer: mollet
+  transfer:
+    daily-limit: 500.00          # tope diario de transferencias salientes por cuenta (S/)
+    max-deposit: 5000.00         # tope por recarga simulada (S/)
+  admin:
+    email: ${ADMIN_EMAIL:}
+    password: ${ADMIN_PASSWORD:}

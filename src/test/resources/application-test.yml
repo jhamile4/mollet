@@ -1,0 +1,8 @@
+# Perfil para pruebas de integración. La base de datos la levanta Testcontainers
+# (ver TestcontainersConfiguration), así que aquí no hay datasource.
+mollet:
+  jwt:
+    secret: test-only-secret-0123456789-abcdefghijklmnop
+  admin:
+    email: admin@mollet.test
+    password: AdminTest123

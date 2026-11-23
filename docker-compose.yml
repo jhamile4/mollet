@@ -1,0 +1,45 @@
+# Desarrollo local.
+#   Solo la base de datos (y corres la app desde el IDE o con ./mvnw spring-boot:run):
+#       docker compose up -d db
+#   Todo dentro de Docker (base de datos + API en http://localhost:8080):
+#       docker compose --profile app up --build
+#
+# Las credenciales de aquí son SOLO para tu máquina; producción usa variables de entorno.
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: mollet-db
+    environment:
+      POSTGRES_DB: mollet
+      POSTGRES_USER: mollet
+      POSTGRES_PASSWORD: mollet
+    ports:
+      - "5432:5432"
+    volumes:
+      - mollet-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mollet -d mollet"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    profiles: ["app"]
+    build: .
+    container_name: mollet-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://db:5432/mollet
+      DATABASE_USERNAME: mollet
+      DATABASE_PASSWORD: mollet
+      JWT_SECRET: local-docker-secret-0123456789-abcdefghij
+      ADMIN_EMAIL: admin@mollet.dev
+      ADMIN_PASSWORD: Admin12345
+    ports:
+      - "8080:8080"
+
+volumes:
+  mollet-data:

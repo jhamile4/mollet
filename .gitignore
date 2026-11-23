@@ -1,0 +1,22 @@
+target/
+!.mvn/wrapper/maven-wrapper.properties
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+.factorypath
+bin/
+
+# Variables de entorno locales (nunca subir secretos)
+.env
+.env.*
+!.env.example
+
+# SO
+.DS_Store
+Thumbs.db
+*.log

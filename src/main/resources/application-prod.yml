@@ -1,0 +1,22 @@
+# Perfil de producción. No hay ningún secreto aquí: todo llega por variables de entorno
+# configuradas en el proveedor (Render). Si falta una variable obligatoria, la app no arranca.
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      maximum-pool-size: 5       # el plan gratuito de Neon admite pocas conexiones
+      minimum-idle: 1
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework   # detrás del proxy HTTPS de Render (Swagger usa https)
+
+mollet:
+  jwt:
+    secret: ${JWT_SECRET}
+
+logging:
+  level:
+    root: INFO
